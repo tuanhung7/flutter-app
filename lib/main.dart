@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:html';
 import 'dart:typed_data';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
@@ -26,56 +27,37 @@ class ImageUploadDemo extends StatefulWidget {
 class _ImageUploadDemoState extends State<ImageUploadDemo> {
   Uint8List? _imageBytes;
   String? _ocrText;
+  File? _image;
 
   Future<void> _uploadImage() async {
-    final url = 'http://ba25-34-74-149-157.ngrok.io/upload-image';
-    final response = await http.post(Uri.parse(url), body: {
-      'image': base64Encode(_imageBytes!),
-    });
-    if (response.statusCode == 200) {
-      print('Upload success!');
-      final decodedResponse = jsonDecode(response.body);
-      final ocrText = decodedResponse['ocr_text'];
-      print(ocrText);
-      setState(() {
-        _ocrText = ocrText;
-      });
-    } else {
-      print('Upload failed. Error code: ${response.statusCode}');
-    }
-    // if (response.statusCode == 200) {
-    //   final decodedResponse = jsonDecode(response.body);
-    //   final ocrText = decodedResponse['ocr_text'];
-    //   print(ocrText);
-    //   setState(() {
-    //     _ocrText = ocrText;
-    //   });
-    // } else {
-    //   throw Exception('Failed to upload image');
-    // }
+    // final url = 'http://127.0.0.1:5000//upload-image';
     // final response = await http.post(Uri.parse(url), body: {
     //   'image': base64Encode(_imageBytes!),
     // });
-
     // if (response.statusCode == 200) {
-    //   final ocrResponse = await http.post(Uri.parse('http://1a0f-34-122-41-92.ngrok.io/ocr'),
-    //       body: {'filename': 'image.jpg'});
-
-    //   if (ocrResponse.statusCode == 200) {
-    //     final data = jsonDecode(ocrResponse.body);
-    //     setState(() {
-    //       _ocrText = data['ocr_text'];
-    //     });
-    //   } else {
-    //     print('OCR request failed with status code ${ocrResponse.statusCode}');
-    //   }
+    //   print('Upload success!');
     // } else {
-    //   print('Upload request failed with status code ${response.statusCode}');
+    //   print('Upload failed. Error code: ${response.statusCode}');
     // }
+    final text = "Hello, World!";
 
-    // final ocrText = response.body;
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => MyHomePage(),
+      ),
+    );
+        // Tạo request và gửi ảnh lên server
+    // var request = http.MultipartRequest('POST', Uri.parse('http://<your_server_address>/ocr'));
+    // request.files.add(await http.MultipartFile.fromPath('image', _image.path));
+    // var response = await request.send();
+
+    // // Đọc kết quả OCR trả về
+    // var responseBody = await response.stream.bytesToString();
+    // var responseJson = json.decode(responseBody);
     // setState(() {
-    //   _ocrText = ocrText;
+      
+    //   _ocrText = responseJson['result'];
     // });
   }
 
@@ -93,7 +75,7 @@ class _ImageUploadDemoState extends State<ImageUploadDemo> {
             SizedBox(height: 16.0),
             ElevatedButton(
               onPressed: () async {
-                final bytes = await rootBundle.load('output/data(7).jpg');
+                final bytes = await rootBundle.load('output/data(6).jpg');
                 setState(() {
                   _imageBytes = bytes.buffer.asUint8List();
                 });
@@ -102,18 +84,18 @@ class _ImageUploadDemoState extends State<ImageUploadDemo> {
             ),
             SizedBox(height: 16.0),
             ElevatedButton(
-              onPressed: () {
-                _uploadImage();
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => MyHomePage()),
-                );
-              },
-              // onPressed: _uploadImage,
+              // onPressed: () {
+              //   _uploadImage();
+              //   Navigator.push(
+              //     context,
+              //     MaterialPageRoute(builder: (context) => MyHomePage()),
+              //   );
+              // },
+              onPressed: _uploadImage,
               child: Text('Upload Image'),
             ),
-            SizedBox(height: 16.0),
-            _ocrText != null ? Text(_ocrText!) : Container(),
+            // SizedBox(height: 16.0),
+            // _ocrText != null ? Text(_ocrText!) : Container(),
           ],
         ),
       ),
